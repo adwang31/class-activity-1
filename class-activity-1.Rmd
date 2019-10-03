@@ -6,42 +6,29 @@ output: html_document
 ---
 
 ```{r}
-#3.
-library(dplyr)
 library(tidyr)
+library(dplyr)
 
-#4.
-DF1 <- read.csv("swirl-data.csv")
+df1 <- swirl_data
+class(df1)
+df2 <- select(df1, hash, lesson_name, attempt)
+df2
 
-#5.
-DF2 <- select(DF1, hash, lesson_name, attempt)
+df3 <- df3 %>% 
+  group_by(hash, lesson_name) %>% 
+  summarize(attempt = sum(attempt))
 
-#6.
-DF3 <- DF2 %>% group_by(hash, lesson_name) %>% summarise(attempt = sum(attempt))
+df3b <- spread(df3, lesson_name, attempt)
 
-#7./8.
-DF3b <- spread(DF3, lesson_name, attempt)
+df4 <- select(df1, hash, lesson_name, correct)
 
-#9.
-DF4 <- select(DF1, hash, lesson_name, correct)
+df4$correct <- ifelse(df4$correct == TRUE, 1, ifelse(df4$correct == NA, 0))
+df4$correct
+df5 <- df4 %>% 
+  group_by(hash, lesson_name) %>% 
+  summarize(mean.correct = mean(correct, na.rm = TRUE))
 
-#10.
-DF4$correct <- ifelse(DF4$correct == TRUE, 1, 
-                      ifelse(DF4$correct == NA, NA, 0))
 
-#11.
-DF5 <- DF4 %>% group_by(hash, lesson_name) %>% summarise(mean.correct = mean(correct, na.rm = TRUE))
 
-# Extra Credit
-
-DF6 <- select(DF1, correct, datetime)
-
-DF6$correct <- ifelse(DF6$correct == TRUE, 1, 0)
-
-DF6$datetime <- as.POSIXlt(DF6$datetime, origin = "1970-01-01 00:00.00 UTC")
-
-DF6$datetime <- strftime(DF6$datetime, format="%b:%e")
-
-DF7 <- DF6 %>% group_by(datetime) %>% summarise(av.correct = mean(correct, na.rm = TRUE))
 ```
 
